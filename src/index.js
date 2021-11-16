@@ -59,7 +59,7 @@ class Game extends React.Component {
     const squares = current.squares.slice();
 
     // Toma una copia de las coordenadas guardadas hasta ahora
-    const indices = this.state.indices.slice();
+    const indices = this.state.indices.slice(0, this.state.stepNumber);
     // Calcula las coordenadas del ultimo movimiento
     const coordinates = getCoordinates(i);
     // Las agrega a las coordenadas pasadas
@@ -106,7 +106,9 @@ class Game extends React.Component {
 
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button onClick={() => this.jumpTo(move)}>
+            {move === this.state.stepNumber ? <b>{desc}</b> : desc}
+          </button>
         </li>
       );
     });
