@@ -47,6 +47,7 @@ class Game extends React.Component {
           squares: Array(9).fill(null),
         },
       ],
+      indices: [],
       stepNumber: 0,
       xIsNext: true,
     };
@@ -56,6 +57,13 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+
+    // Toma una copia de las coordenadas guardadas hasta ahora
+    const indices = this.state.indices.slice();
+    // Calcula las coordenadas del ultimo movimiento
+    const coordinates = getCoordinates(i);
+    // Las agrega a las coordenadas pasadas
+    const id = indices.concat([coordinates]);
 
     if (calculateWinner(squares) || squares[i]) {
       return;
@@ -67,6 +75,7 @@ class Game extends React.Component {
           squares: squares,
         },
       ]),
+      indices: id,
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
@@ -83,9 +92,18 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
+    const indices = this.state.indices;
 
     const moves = history.map((step, move) => {
-      const desc = move ? 'Go to move #' + move : 'Go to game start';
+      // const desc = move ? 'Go to move #' + move : 'Go to game start';
+      let desc;
+      const turn = move % 2 === 0 ? 'O' : 'X';
+      if (move) {
+        desc = `Go to move #${move} (${turn} in ${indices[move - 1]})`;
+      } else {
+        desc = 'Go to game start';
+      }
+
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -132,6 +150,22 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+
+function getCoordinates(i) {
+  const coordinates = [
+    [1, 1],
+    [2, 1],
+    [3, 1],
+    [1, 2],
+    [2, 2],
+    [3, 2],
+    [1, 3],
+    [2, 3],
+    [3, 3],
+  ];
+
+  return coordinates[i];
 }
 
 // ========================================
