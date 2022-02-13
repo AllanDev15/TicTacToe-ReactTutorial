@@ -1,0 +1,177 @@
+$bgColor: #3a3f47;
+$boardColor: #eeeeee;
+$color1: #ecb365;
+$color2: #6a97ff;
+$winnerColor: #97ff6a;
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  font: 16px 'Century Gothic', Futura, sans-serif;
+  margin: 0px;
+  min-height: 100vh;
+  background-color: $bgColor;
+  color: white;
+}
+
+ol,
+ul {
+  padding-left: 0px;
+}
+li {
+  list-style: none;
+}
+
+h1 {
+  padding: 40px 0px;
+  text-align: center;
+  margin: 0;
+  font-size: 40px;
+}
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.game {
+  &__status {
+    margin: 64px 0px 96px 0px;
+    text-align: center;
+    font-size: 28px;
+    span {
+      font-size: 32px;
+    }
+  }
+  &__info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  &__moves {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__btn-move {
+    border: none;
+    background-color: $bgColor;
+    color: white;
+    padding: 16px 16px 16px 48px;
+    position: relative;
+    border-radius: 10px;
+    font-size: 14px;
+    border: 2px solid white;
+
+    span {
+      position: absolute;
+      color: $bgColor;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+    }
+    span.X {
+      background-color: $color1;
+    }
+    span.O {
+      background-color: $color2;
+    }
+
+    &--start {
+      padding: 16px 16px;
+      color: white;
+    }
+
+    &--X {
+      border: 3px solid $color1;
+    }
+    &--O {
+      border: 3px solid $color2;
+    }
+  }
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  place-items: center;
+  width: fit-content;
+  border-radius: 16px;
+
+  &__square {
+    font-family: 'Century Gothic', Futura, sans-serif;
+    background-color: $boardColor;
+    border: 1px solid #bebebe;
+    outline: none;
+    font-size: 48px;
+    font-weight: bold;
+    line-height: 34px;
+    height: 100px;
+    min-width: 100px;
+    padding: 0;
+    text-align: center;
+    margin: 8px 4px;
+    position: relative;
+    border-radius: 12px;
+    top: 0px;
+    transition: top 0.2s ease;
+
+    &:hover {
+      top: -2px;
+    }
+
+    &:active {
+      top: 4px;
+    }
+
+    &:hover::after {
+      bottom: -10px;
+    }
+    &:active::after {
+      bottom: -4px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background-color: #bebebe;
+      z-index: -1;
+      transition: bottom 0.2s ease;
+    }
+  }
+}
+
+.X {
+  color: $color1;
+}
+.O {
+  color: $color2;
+}
+.winner {
+  color: $winnerColor;
+  font-weight: bold;
+}

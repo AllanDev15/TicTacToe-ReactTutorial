@@ -3,9 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
+  let span;
+  if (props.value === 'X') {
+    span = <span className="X">X</span>;
+  } else if (props.value === 'O') {
+    span = <span className="O">O</span>;
+  }
   return (
-    <button className="square" onClick={props.onClick}>
-      {props.value}
+    <button className="board__square" onClick={props.onClick}>
+      {span}
     </button>
   );
 }
@@ -19,13 +25,31 @@ class Board extends React.Component {
     let board = [];
     let squareNum = 0;
     for (let i = 0; i < 3; i++) {
-      board.push([<div key={i + '' + i} className="board-row"></div>]);
       for (let j = 0; j < 3; j++) {
-        board[i].push(this.renderSquare(squareNum));
+        board.push(this.renderSquare(squareNum));
         squareNum++;
       }
     }
-    return <div>{board}</div>;
+
+    return <div className="board">{board}</div>;
+  }
+}
+
+class Status extends React.Component {
+  render() {
+    let res = '';
+
+    if (this.props.value === 'X' || this.props.value === 'O') {
+      res = (
+        <p>
+          Next Player:
+          <span className={this.props.value}> {this.props.value}</span>
+        </p>
+      );
+    } else {
+      res = <p className="winner">{this.props.value}</p>;
+    }
+    return res;
   }
 }
 
@@ -72,10 +96,21 @@ class Game extends React.Component {
     });
   }
 
-  jumpTo(step) {
+  jumpTo(move) {
     this.setState({
-      stepNumber: step,
-      xIsNext: step % 2 === 0,
+      stepNumber: move,
+      xIsNext: move % 2 === 0,
+    });
+  }
+  restartGame() {
+    this.setState({
+      history: [
+        {
+          squares: Array(9).fill(null),
+        },
+      ],
+      stepNumber: 0,
+      xIsNext: true,
     });
   }
 
@@ -86,20 +121,34 @@ class Game extends React.Component {
     const indices = this.state.indices;
 
     const moves = history.map((step, move) => {
-      // const desc = move ? 'Go to move #' + move : 'Go to game start';
       let desc;
       const turn = move % 2 === 0 ? 'O' : 'X';
+      const btnClass =
+        move === this.state.stepNumber
+          ? 'game__btn-move game__btn-move--' + turn
+          : 'game__btn-move';
+
       if (move) {
-        desc = `Go to move #${move} (${turn} in ${indices[move - 1]})`;
+        const lastMove = indices[move - 1].join();
+        desc = (
+          <button className={btnClass} onClick={() => this.jumpTo(move)}>
+            <span className={turn}>{move}</span> Go to {turn} in ({lastMove})
+          </button>
+        );
       } else {
-        desc = 'Go to game start';
+        desc = (
+          <button
+            className="game__btn-move game__btn-move--start"
+            onClick={() => this.restartGame(move)}
+          >
+            Go to game start
+          </button>
+        );
       }
 
       return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>
-            {move === this.state.stepNumber ? <b>{desc}</b> : desc}
-          </button>
+        <li className="game__move" key={move}>
+          {desc}
         </li>
       );
     });
@@ -108,17 +157,20 @@ class Game extends React.Component {
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = this.state.xIsNext ? 'X' : 'O';
     }
 
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
+      <div className="container">
+        <h1>Tic Tac Toe</h1>
+        <div className="game">
+          <div className="game__status">
+            <Status value={status} />
+          </div>
+          <div className="game__info">
+            <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
+            <ol className="game__moves">{moves}</ol>
+          </div>
         </div>
       </div>
     );
