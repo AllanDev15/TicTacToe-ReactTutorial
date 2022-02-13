@@ -3,22 +3,42 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
-  let span;
+  let classStyle = 'board__square';
+
   if (props.value === 'X') {
-    span = <span className="X">X</span>;
+    classStyle += ' board__square--X';
   } else if (props.value === 'O') {
-    span = <span className="O">O</span>;
+    classStyle += ' board__square--O';
   }
+
+  if (props.current === props.last) {
+    classStyle += ' current';
+  }
+
   return (
-    <button className="board__square" onClick={props.onClick}>
-      {span}
+    <button className={classStyle} onClick={props.onClick}>
+      <span>{props.value}</span>
     </button>
   );
 }
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square key={i} value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+    let lastBtn;
+    const last = this.props.current[this.props.current.length - 1];
+    if (last) {
+      lastBtn = getIndex(last);
+    }
+
+    return (
+      <Square
+        key={i}
+        value={this.props.squares[i]}
+        onClick={() => this.props.onClick(i)}
+        current={i}
+        last={lastBtn}
+      />
+    );
   }
 
   render() {
@@ -168,7 +188,11 @@ class Game extends React.Component {
             <Status value={status} />
           </div>
           <div className="game__info">
-            <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
+            <Board
+              squares={current.squares}
+              onClick={(i) => this.handleClick(i)}
+              current={indices}
+            />
             <ol className="game__moves">{moves}</ol>
           </div>
         </div>
@@ -213,6 +237,28 @@ function getCoordinates(i) {
   return coordinates[i];
 }
 
+function getIndex(coordinate) {
+  let index = 0;
+  const coordinates = [
+    [1, 1],
+    [2, 1],
+    [3, 1],
+    [1, 2],
+    [2, 2],
+    [3, 2],
+    [1, 3],
+    [2, 3],
+    [3, 3],
+  ];
+
+  for (let i = 0; i < coordinates.length; i++) {
+    if (coordinates[i][0] === coordinate[0] && coordinates[i][1] === coordinate[1]) {
+      index = i;
+    }
+  }
+
+  return index;
+}
 // ========================================
 
 ReactDOM.render(<Game />, document.getElementById('root'));

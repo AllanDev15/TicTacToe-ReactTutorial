@@ -94,9 +94,11 @@ h1 {
 }
 .game__btn-move--X {
   border: 3px solid #ecb365;
+  box-shadow: 0px 3px 20px rgba(236, 179, 101, 0.5);
 }
 .game__btn-move--O {
   border: 3px solid #6a97ff;
+  box-shadow: 0px 3px 20px rgba(106, 151, 255, 0.5);
 }
 
 .board {
@@ -147,6 +149,24 @@ h1 {
   background-color: #bebebe;
   z-index: -1;
   transition: bottom 0.2s ease;
+}
+.board__square--X {
+  color: #ecb365;
+}
+.board__square--O {
+  color: #6a97ff;
+}
+.board__square--X.current {
+  border: 3px solid #ecb365;
+}
+.board__square--X.current::after {
+  background-color: #ecb365;
+}
+.board__square--O.current {
+  border: 3px solid #6a97ff;
+}
+.board__square--O.current::after {
+  background-color: #6a97ff;
 }
 
 .X {
